@@ -10,17 +10,22 @@ class Connection:
         self.password = password
         if self.password is None:
             self.password = getpass.getpass()
+        self.connection = None
 
     def __enter__(self):
-        self.connection = adba.Connection(keepAlive=True)
-        self.connection.auth(self.user,self.password)
+        self.connection = adba.Connection()
+        if not self.connection.authed():
+            self.connection.auth(self.user, self.password)
         return self.connection
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if self.connection.authed():
-            self.connection.logout(True)
-        else:
-            self.connection.cut()
+        self.connection.logout()
+
+    def start_logging(self):
+        self.logger = adba.StartLogging()
+
+    def stop_logging(self):
+        adba.StopLogging(self.logger)
 
 def add_episode(connection, filePath, storage=None):
     ep = adba.Episode(connection, filePath=filePath,
@@ -29,13 +34,13 @@ def add_episode(connection, filePath, storage=None):
     ep.load_data()
     name = os.path.basename(filePath)
     if ep.fid is None:
-        print 'Missing:', name
+        print('Missing:', name)
     elif ep.mylist_id:
-        print 'Found: %s %s - %s' % (ep.romaji_name, str(ep.epno), name)
-        connection.mylistadd(lid=ep.mylist_id, edit=1, state=1, storage=storage)
+        ep.edit_to_mylist(state=1, storage=storage)
+        print('Found: {0} {1} - {2}'.format(ep.romaji_name, str(ep.epno), name))
     else:
-        print 'Added: %s %s - %s' % (ep.romaji_name, str(ep.epno), name)
-        connection.mylistadd(size=ep.size, ed2k=ep.ed2k, state=1, storage=storage)
+        ep.add_to_mylist(state=1, storage=storage)
+        print('Added: {0} {1} - {2}'.format(ep.romaji_name, str(ep.epno), name))
 
 def create_parser(show_help_option=False):
     anidb_parser = argparse.ArgumentParser(add_help=show_help_option)

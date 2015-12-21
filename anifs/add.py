@@ -3,15 +3,11 @@ import os
 
 import anifs.anidb as anidb
 
-def add_files(args):
-    try:
-        connection = anidb.Connection(args.user, args.password)
-        with connection as conn:
-            for filePath in args.files:
-                if os.path.isfile(filePath):
-                    anidb.add_episode(conn, filePath, args.storage)
-    except Exception,e:
-       print('exception: ' + str(e))
+def add_files(conn, args):
+    if conn.authed():
+        for filePath in args.files:
+            if os.path.isfile(filePath):
+                anidb.add_episode(conn, filePath, args.storage)
 
 def arguments(parser):
     parser.add_argument('-s','--storage')
@@ -21,7 +17,9 @@ def main():
     arguments(parser)
 
     args = parser.parse_args()
-    add_files(args)
+    connection = anidb.Connection(args.user, args.password)
+    with connection as conn:
+        add_files(conn, args)
     
 
 if __name__ == '__main__':

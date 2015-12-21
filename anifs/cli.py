@@ -16,11 +16,17 @@ def main():
     create_add_parser(subparsers,anidb_parser)
 
     args = parser.parse_args()
-
-    if args.mode == 'add':
-       add.add_files(args)
-    else:
-       raise ValueError("Unhandled mode %s" % args.mode)
+    connection = anidb.Connection(args.user, args.password)
+    connection.start_logging()
+    try:
+        with connection as conn:
+            if args.mode == 'add':
+               add.add_files(conn, args)
+            else:
+               raise ValueError("Unhandled mode %s" % args.mode)
+    except Exception as e:
+       print('exception: ' + str(e))
+    connection.stop_logging()
 
 if __name__ == '__main__':
     main()
