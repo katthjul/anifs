@@ -1,0 +1,2 @@
+https://github.com/katthjul/adba/zipball/master#egg=adba
+https://github.com/katthjul/anifs/zipball/master#egg=anifs

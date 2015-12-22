@@ -3,7 +3,10 @@
 from distutils.core import setup
 
 setup(name='anifs',
-      version='0.0',
-      py_modules=['anifs'],
+      version='0.1',
+      packages=['anifs'],
       scripts=['bin/anifs'],
+      install_requires=[
+          "adba",
+      ],
      )

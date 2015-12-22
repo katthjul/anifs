@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+import re
+import sys
+import os.path
+
+pat = '.+#egg=(.+)'
+
+def get_requirements(file_name, repos_dir):
+    out_reqs = []
+    out_dir = os.path.abspath(repos_dir)
+    with open(file_name) as req_file:
+        reqs = [l.strip() for l in req_file.readlines()]
+        for req in reqs:
+            match = re.match(pat, req)
+            if match and not req.startswith('#'):
+                name = match.group(1)
+                repo = os.path.join(repos_dir, name)
+                if os.path.isdir(repo):
+                    out_reqs.append('-e %s' % os.path.join(repos_dir, name))
+                else:
+                    out_reqs.append(req)
+            else:
+                out_reqs.append(req)
+    return out_reqs
+
+if __name__ == '__main__':
+    print('\n'.join(get_requirements(*sys.argv[1:])))
