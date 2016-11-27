@@ -1,4 +1,3 @@
-import argparse
 import getpass
 import os
 
@@ -42,12 +41,3 @@ def add_episode(connection, filePath, storage=None):
         ep.add_to_mylist(state=1, storage=storage)
         print('Added: {0} {1} - {2}'.format(ep.romaji_name, str(ep.epno), name))
 
-def create_parser(show_help_option=False):
-    anidb_parser = argparse.ArgumentParser(add_help=show_help_option)
-    anidb_parser.add_argument('files', metavar='FILE', nargs='+',
-                        help='file to process')
-    anidb_parser.add_argument('-u', '--user', required=True,
-                        help='user at aniDB')
-    anidb_parser.add_argument('-p', '--password',
-                        help='password at aniDB')
-    return anidb_parser
