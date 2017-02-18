@@ -28,7 +28,7 @@ def main():
 
     args = parser.parse_args()
     if args.mode == 'add':
-       add.execute(args)
+       add.run(args)
     else:
        raise ValueError("Unhandled mode %s" % args.mode)
 

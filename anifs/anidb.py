@@ -2,6 +2,7 @@ import getpass
 import os
 
 import adba
+import anifs.export as export
 
 class Connection:
     def __init__(self, user=None, password=None):
@@ -28,16 +29,18 @@ class Connection:
 
 def add_episode(connection, filePath, storage=None):
     ep = adba.Episode(connection, filePath=filePath,
-                      paramsF=["mylist_id"],
-                      paramsA=["romaji_name", "epno"])
+                      paramsF=['aid', 'mylist_id'],
+                      paramsA=['romaji_name', 'epno'])
     ep.load_data()
     name = os.path.basename(filePath)
     if ep.fid is None:
         print('Missing:', name)
+        return None
     elif ep.mylist_id:
         ep.edit_to_mylist(state=1, storage=storage)
         print('Found: {0} {1} - {2}'.format(ep.romaji_name, str(ep.epno), name))
     else:
         ep.add_to_mylist(state=1, storage=storage)
         print('Added: {0} {1} - {2}'.format(ep.romaji_name, str(ep.epno), name))
+    return export.Entry(filePath, ep)
 
