@@ -14,6 +14,10 @@ class Entry:
         self.epno = episode.epno
         self.anime = episode.romaji_name
 
+    def update_path(self, dirName):
+        self.dirName = os.path.abspath(dirName)
+        self.filePath = os.path.join(self.dirName, self.fileName)
+
 def as_json(o):
     return o.__dict__
 

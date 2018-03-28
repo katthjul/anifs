@@ -17,6 +17,7 @@ def create_anidb_parser(add_help=False):
 def create_add_parser(parser, parent_parser):
     add_parser = parser.add_parser('add', parents=[parent_parser])
     add_parser.add_argument('-s','--storage')
+    add_parser.add_argument('-d','--destination')
     return add_parser
 
 def main():
